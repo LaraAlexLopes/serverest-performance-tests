@@ -39,7 +39,7 @@ export const teardown = (data: TestData) => {
 
   console.log(`contention: stock left ${stock}, units in carts ${reserved}, initial stock ${STOCK}`);
   validateInvariant('stock never goes negative', stock >= 0);
-  validateInvariant('no more units are reserved than the initial stock', reserved <= STOCK);
+  validateInvariant('KI-01 (#1) no more units are reserved than the initial stock', reserved <= STOCK);
   validateInvariant('stock left plus units in carts equals the initial stock', stock + reserved === STOCK);
 
   cleanUp(data);

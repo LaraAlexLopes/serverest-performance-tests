@@ -58,7 +58,7 @@ The k6 web dashboards (HTML) with every metric over time are written to `reports
 
 ## Findings
 
-### KI-01: ServeRest oversells stock under concurrent orders
+### [KI-01](https://github.com/LaraAlexLopes/serverest-performance-tests/issues/1): ServeRest oversells stock under concurrent orders
 
 **120 buyers** try to put **1 unit** of a product with **stock 50** in their cart at the same time.
 
@@ -71,7 +71,7 @@ The k6 web dashboards (HTML) with every metric over time are written to `reports
 
 Every concurrent buyer gets a cart, and the stock barely moves: most of the decrements are lost. The control run, with one buyer at a time, behaves correctly, so the defect only shows up under concurrency. It points to a non-atomic read-check-write on the stock (lost update). The fix is an atomic, conditional decrement, or a lock around the stock check.
 
-The test runs in CI as a known issue: it fails while the defect exists, without blocking the pipeline.
+Tracked in [issue #1](https://github.com/LaraAlexLopes/serverest-performance-tests/issues/1). The test runs in CI as a known issue: it fails while the defect exists, without blocking the pipeline.
 
 ## How it is built
 
