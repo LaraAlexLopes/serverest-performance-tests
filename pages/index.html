@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>ServeRest Performance</title>
+    <style>
+      :root {
+        color-scheme: light dark;
+        --bg: #ffffff;
+        --fg: #1f2328;
+        --muted: #59636e;
+        --card: #f6f8fa;
+        --accent: #7d64ff;
+      }
+      @media (prefers-color-scheme: dark) {
+        :root {
+          --bg: #0d1117;
+          --fg: #e6edf3;
+          --muted: #9198a1;
+          --card: #161b22;
+          --accent: #a594ff;
+        }
+      }
+      body {
+        margin: 0;
+        background: var(--bg);
+        color: var(--fg);
+        font:
+          16px/1.5 system-ui,
+          sans-serif;
+      }
+      main {
+        max-width: 760px;
+        margin: 0 auto;
+        padding: 48px 16px;
+      }
+      p {
+        color: var(--muted);
+      }
+      a.card {
+        display: block;
+        padding: 16px 20px;
+        margin: 12px 0;
+        border-radius: 8px;
+        background: var(--card);
+        color: inherit;
+        text-decoration: none;
+      }
+      a.card strong {
+        color: var(--accent);
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <h1>ServeRest Performance</h1>
+      <p>k6 web dashboards of the latest run on <code>main</code>, against ServeRest in Docker (1 CPU, 512 MB).</p>
+      <a class="card" href="smoke.html"
+        ><strong>Smoke</strong><br />Every journey once, with zero tolerance for errors.</a
+      >
+      <a class="card" href="load.html"
+        ><strong>Load</strong><br />Expected traffic: 30 shoppers, 20 visitors/s and catalog changes, gated by the
+        SLOs.</a
+      >
+      <a class="card" href="contention.html"
+        ><strong>Stock contention</strong><br />120 buyers competing for 50 units. Documents an overselling defect
+        (expected to fail).</a
+      >
+    </main>
+  </body>
+</html>

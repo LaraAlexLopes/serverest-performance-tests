@@ -1,0 +1,37 @@
+{
+  "name": "serverest-performance-tests",
+  "version": "1.0.0",
+  "description": "Performance tests for ServeRest with k6 and TypeScript: smoke, load, stress, spike, breakpoint, soak and stock contention",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=24.22.1 <25"
+  },
+  "scripts": {
+    "server:up": "docker compose -f docker/docker-compose.yml up -d --wait",
+    "server:down": "docker compose -f docker/docker-compose.yml down",
+    "test:smoke": "bash scripts/k6.sh tests/smoke.ts",
+    "test:load": "bash scripts/k6.sh tests/load.ts",
+    "test:stress": "bash scripts/k6.sh tests/stress.ts",
+    "test:spike": "bash scripts/k6.sh tests/spike.ts",
+    "test:breakpoint": "bash scripts/k6.sh tests/breakpoint.ts",
+    "test:soak": "bash scripts/k6.sh tests/soak.ts",
+    "test:contention": "bash scripts/k6.sh tests/contention.ts",
+    "typecheck": "tsc --noEmit",
+    "lint": "eslint .",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "prepare": "husky"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^21.2.4",
+    "@commitlint/config-conventional": "^21.2.4",
+    "@eslint/js": "^10.0.1",
+    "@types/k6": "^2.3.1",
+    "eslint": "^10.14.0",
+    "husky": "^9.1.7",
+    "prettier": "^3.10.1",
+    "typescript": "~5.9.3",
+    "typescript-eslint": "^8.72.2"
+  }
+}

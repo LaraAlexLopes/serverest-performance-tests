@@ -1,0 +1,91 @@
+name: Performance
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+    inputs:
+      test:
+        description: Extra test to run after smoke and load
+        type: choice
+        default: none
+        options: [none, stress, spike, breakpoint, soak]
+
+concurrency:
+  group: performance-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  quality:
+    name: Lint & typecheck
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run typecheck
+      - run: npm run format:check
+
+  performance:
+    name: k6 against ServeRest (Docker)
+    needs: quality
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v7
+      - run: docker pull grafana/k6:2.3.0
+      - run: npm run server:up
+
+      - name: Smoke
+        run: npm run test:smoke
+
+      - name: Load (SLO gate)
+        run: npm run test:load
+
+      - name: Stock contention (known issue, expected to fail)
+        if: success() || failure()
+        continue-on-error: true
+        run: npm run test:contention
+
+      - name: ${{ inputs.test }}
+        if: (success() || failure()) && github.event_name == 'workflow_dispatch' && inputs.test != 'none'
+        run: npm run test:${{ inputs.test }}
+
+      - name: Prepare reports
+        if: always()
+        run: cp pages/index.html reports/
+
+      - uses: actions/upload-artifact@v7
+        if: always()
+        with:
+          name: k6-reports
+          path: reports
+          retention-days: 14
+
+      - uses: actions/upload-pages-artifact@v5
+        if: always() && github.ref == 'refs/heads/main'
+        with:
+          path: reports
+
+      - if: always()
+        run: npm run server:down
+
+  report:
+    name: Publish dashboards
+    needs: performance
+    if: always() && github.ref == 'refs/heads/main' && needs.performance.result != 'skipped'
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
+      - id: deploy
+        uses: actions/deploy-pages@v5

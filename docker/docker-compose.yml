@@ -1,0 +1,13 @@
+name: serverest-performance
+
+services:
+  serverest:
+    image: paulogoncalvesbh/serverest:${SERVEREST_VERSION:-3.2.2}
+    command: ['--nodoc', '--timeout', '3600']
+    ports:
+      - '3000:3000'
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 512M
